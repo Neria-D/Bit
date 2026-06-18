@@ -146,9 +146,9 @@ The GitHub Actions workflow:
 - runs on push, pull request, and a daily scheduled cron trigger
 - checks out the repository
 - installs Java 17 and compiles the project with Java 15 source/target compatibility
-- configures AWS credentials from GitHub Secrets
-- injects endpoint and DynamoDB table values from Secrets
-- runs JUnit tests tagged with `backend` using `mvn clean test -Dgroups=backend`
+- compiles the backend framework using `mvn -DskipTests test`
+- configures AWS credentials from GitHub Secrets only when they are provided
+- runs JUnit tests tagged with `backend` using `mvn clean test -Dgroups=backend` only when the endpoint, DynamoDB table, and AWS secrets are configured
 
 The backend test requires a real or mocked endpoint and DynamoDB-compatible backend to execute successfully. For the conceptual assignment, the implementation demonstrates the framework, structure, API validation, and AWS verification flow without requiring a live environment.
 

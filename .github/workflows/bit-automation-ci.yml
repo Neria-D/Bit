@@ -7,10 +7,12 @@ on:
     - cron: "0 6 * * *"
 
 jobs:
-  backend-tests:
+  backend-validation:
     runs-on: ubuntu-latest
 
     env:
+      AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+      AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
       AWS_REGION: ${{ secrets.AWS_REGION }}
       REQUEST_PAYMENT_ENDPOINT: ${{ secrets.REQUEST_PAYMENT_ENDPOINT }}
       TRANSACTIONS_TABLE_NAME: ${{ secrets.TRANSACTIONS_TABLE_NAME }}
@@ -26,12 +28,21 @@ jobs:
           java-version: 17
           cache: maven
 
+      - name: Compile backend framework
+        run: mvn -DskipTests test
+
       - name: Configure AWS credentials
+        if: ${{ env.AWS_ACCESS_KEY_ID != '' && env.AWS_SECRET_ACCESS_KEY != '' && env.AWS_REGION != '' }}
         uses: aws-actions/configure-aws-credentials@v4
         with:
-          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-region: ${{ secrets.AWS_REGION }}
+          aws-access-key-id: ${{ env.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ env.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ env.AWS_REGION }}
 
-      - name: Run backend tests
+      - name: Run live backend integration test
+        if: ${{ env.AWS_ACCESS_KEY_ID != '' && env.AWS_SECRET_ACCESS_KEY != '' && env.AWS_REGION != '' && env.REQUEST_PAYMENT_ENDPOINT != '' && env.TRANSACTIONS_TABLE_NAME != '' }}
         run: mvn clean test -Dgroups=backend
+
+      - name: Skip live backend integration test
+        if: ${{ env.AWS_ACCESS_KEY_ID == '' || env.AWS_SECRET_ACCESS_KEY == '' || env.AWS_REGION == '' || env.REQUEST_PAYMENT_ENDPOINT == '' || env.TRANSACTIONS_TABLE_NAME == '' }}
+        run: echo "Skipping live backend integration test because endpoint/AWS secrets are not configured."
