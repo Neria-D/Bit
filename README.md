@@ -49,6 +49,34 @@ Each class is kept focused: API communication, AWS validation, configuration, JS
 - Appium
 - GitHub Actions
 
+## Setup / Installation
+
+Clone the repository:
+
+```bash
+git clone https://github.com/Neria-D/Bit.git
+cd Bit
+```
+
+Prerequisites:
+
+- JDK 17 installed locally
+- Maven installed locally
+- AWS credentials only if running the backend test against a real or mocked AWS environment
+- Appium and an Android device/emulator only if adapting the mobile sample for real execution
+
+Compile the backend framework without running the conceptual live test:
+
+```bash
+mvn -DskipTests test
+```
+
+Run the backend test when a real or mocked endpoint and DynamoDB table are configured:
+
+```bash
+mvn clean test -Dgroups=backend
+```
+
 ## Project Structure
 
 ```text
