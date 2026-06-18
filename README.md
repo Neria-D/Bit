@@ -99,7 +99,7 @@ mobile-tests/
   android/tests/BaseMobileTest.kt
   android/tests/ConfirmMoneyPopupTest.kt
 
-.github/workflows/automation.yml
+.github/workflows/bit-automation-ci.yml
 pom.xml
 ```
 

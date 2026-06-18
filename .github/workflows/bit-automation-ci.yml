@@ -1,4 +1,4 @@
-name: Bit Automation Pipeline
+name: Bit Automation CI
 
 on:
   push:
